@@ -1,4 +1,4 @@
-package tn.esprit.autoloc.domain.enums;
+package tn.esprit.autoloc.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

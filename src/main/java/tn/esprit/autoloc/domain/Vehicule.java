@@ -1,10 +1,12 @@
-package tn.esprit.autoloc.domain.enums;
+package tn.esprit.autoloc.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tn.esprit.autoloc.domain.enums.CategorieVehicule;
+import tn.esprit.autoloc.domain.enums.StatutVehicule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
