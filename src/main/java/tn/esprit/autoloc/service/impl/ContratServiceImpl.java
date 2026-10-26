@@ -17,7 +17,16 @@ public class ContratServiceImpl implements IContratService {
             throw new IllegalArgumentException(
                     "Un nouveau contrat ne doit pas avoir d'identifiant");
         }
+
+        verifierContrat(contrat);
         return contratRepository.save(contrat);
+    }
+    private void verifierContrat(Contrat contrat) {
+        if (contrat.getMontantTotal() != null
+                && contrat.getMontantTotal().signum() < 0) {
+            throw new IllegalArgumentException(
+                    "Le montant total ne peut pas être négatif");
+        }
     }
     @Override
     public Contrat findById(Long id) {
@@ -30,10 +39,14 @@ public class ContratServiceImpl implements IContratService {
     }
     @Override
     public Contrat update(Long id, Contrat contrat) {
+        verifierContrat(contrat);
+
         Contrat existant = findById(id);
+
         existant.setMontantTotal(contrat.getMontantTotal());
-        // recopier ici les autres attributs modifiables du contrat (Atelier 2),
-        // sans toucher à l'identifiant ni à la collection de paiements
+        existant.setDateSignature(contrat.getDateSignature());
+        existant.setValide(contrat.isValide());
+
         return contratRepository.save(existant);
     }
     @Override

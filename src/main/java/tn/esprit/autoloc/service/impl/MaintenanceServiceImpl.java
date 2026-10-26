@@ -18,11 +18,15 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
 
     @Override
     public Maintenance create(Maintenance maintenance) {
+
         if (maintenance.getIdMaintenance() != null) {
             throw new IllegalArgumentException(
                     "Une nouvelle maintenance ne doit pas avoir d'identifiant"
             );
         }
+
+        // Vérifier les dates avant l'enregistrement
+        verifierMaintenance(maintenance);
 
         return maintenanceRepository.save(maintenance);
     }
@@ -42,12 +46,20 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
 
     @Override
     public Maintenance update(Long id, Maintenance maintenance) {
+
+        // Vérifier les dates reçues
+        verifierMaintenance(maintenance);
+
+        // Rechercher la maintenance existante
         Maintenance existante = findById(id);
 
+        // Modifier les attributs
         existante.setDateDebut(maintenance.getDateDebut());
         existante.setDateFin(maintenance.getDateFin());
         existante.setDescription(maintenance.getDescription());
-        existante.setVehicule(maintenance.getVehicule());
+
+        // Ne pas modifier l'association vehicule ici :
+        // la gestion des liens sera traitée séparément
 
         return maintenanceRepository.save(existante);
     }
@@ -59,5 +71,19 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
         }
 
         maintenanceRepository.deleteById(id);
+    }
+
+    private void verifierMaintenance(Maintenance maintenance) {
+
+        if (maintenance.getDateDebut() != null
+                && maintenance.getDateFin() != null
+                && maintenance.getDateFin()
+                .isBefore(maintenance.getDateDebut())) {
+
+            throw new IllegalArgumentException(
+                    "La date de fin de maintenance ne peut pas être "
+                            + "antérieure à la date de début"
+            );
+        }
     }
 }

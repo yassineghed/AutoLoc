@@ -24,7 +24,26 @@ public class EmployeServiceImpl implements IEmployeService {
             );
         }
 
+        // Vérifier le nom et le rôle avant l'enregistrement
+        verifierEmploye(employe);
+
         return employeRepository.save(employe);
+    }
+
+    private void verifierEmploye(Employe employe) {
+
+        if (employe.getNom() == null
+                || employe.getNom().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Le nom de l'employé est obligatoire"
+            );
+        }
+
+        if (employe.getRole() == null) {
+            throw new IllegalArgumentException(
+                    "Le rôle de l'employé est obligatoire"
+            );
+        }
     }
 
     @Override
@@ -42,12 +61,20 @@ public class EmployeServiceImpl implements IEmployeService {
 
     @Override
     public Employe update(Long id, Employe employe) {
+
+        // Vérifier les données reçues
+        verifierEmploye(employe);
+
+        // Rechercher l'employé existant
         Employe existant = findById(id);
 
+        // Modifier les attributs
         existant.setNom(employe.getNom());
         existant.setPrenom(employe.getPrenom());
         existant.setRole(employe.getRole());
-        existant.setAgence(employe.getAgence());
+
+        // Ne pas modifier l'agence ici :
+        // la gestion des associations est traitée séparément
 
         return employeRepository.save(existant);
     }

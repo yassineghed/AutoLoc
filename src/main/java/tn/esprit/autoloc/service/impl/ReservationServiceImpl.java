@@ -18,11 +18,15 @@ public class ReservationServiceImpl implements IReservationService {
 
     @Override
     public Reservation create(Reservation reservation) {
+
         if (reservation.getIdReservation() != null) {
             throw new IllegalArgumentException(
                     "Une nouvelle réservation ne doit pas avoir d'identifiant"
             );
         }
+
+        // Vérifier les dates avant l'enregistrement
+        verifierReservation(reservation);
 
         return reservationRepository.save(reservation);
     }
@@ -42,14 +46,20 @@ public class ReservationServiceImpl implements IReservationService {
 
     @Override
     public Reservation update(Long id, Reservation reservation) {
+
+        // Vérifier les dates reçues
+        verifierReservation(reservation);
+
+        // Rechercher la réservation existante
         Reservation existante = findById(id);
 
+        // Modifier les attributs
         existante.setDateDebut(reservation.getDateDebut());
         existante.setDateFin(reservation.getDateFin());
         existante.setStatut(reservation.getStatut());
-        existante.setClient(reservation.getClient());
-        existante.setVehicule(reservation.getVehicule());
-        existante.setContrat(reservation.getContrat());
+
+        // Ne pas modifier les associations ici :
+        // client, vehicule et contrat sont gérés séparément
 
         return reservationRepository.save(existante);
     }
@@ -61,5 +71,17 @@ public class ReservationServiceImpl implements IReservationService {
         }
 
         reservationRepository.deleteById(id);
+    }
+    private void verifierReservation(Reservation reservation) {
+
+        if (reservation.getDateDebut() != null
+                && reservation.getDateFin() != null
+                && reservation.getDateFin()
+                .isBefore(reservation.getDateDebut())) {
+
+            throw new IllegalArgumentException(
+                    "La date de fin ne peut pas être antérieure à la date de début"
+            );
+        }
     }
 }
