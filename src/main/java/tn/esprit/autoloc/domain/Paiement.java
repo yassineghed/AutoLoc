@@ -29,7 +29,7 @@ public class Paiement {
     private ModePaiement modePaiement;
 
     // Relation avec Contrat
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contrat_id")
     private Contrat contrat;
 }

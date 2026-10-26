@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,4 +30,11 @@ public class Contrat {
     // Relation inverse avec Reservation
     @OneToOne(mappedBy = "contrat")
     private Reservation reservation;
+
+    @OneToMany(
+            mappedBy = "contrat",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Paiement> paiements = new ArrayList<>();
 }
