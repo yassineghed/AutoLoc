@@ -29,6 +29,15 @@ public class VehiculeServiceImpl implements IVehiculeService {
         return vehiculeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicule", id));
     }
+    @Override
+    public long count() {
+        return vehiculeRepository.count();
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return vehiculeRepository.existsById(id);
+    }
 
     @Override
     public List<Vehicule> findAll() {

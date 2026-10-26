@@ -10,6 +10,10 @@ public interface IVehiculeService {
     Vehicule findById(Long id);
 
     List<Vehicule> findAll();
+    
+    long count();
+
+    boolean existsById(Long id);
 
     Vehicule update(Long id, Vehicule vehicule);
 

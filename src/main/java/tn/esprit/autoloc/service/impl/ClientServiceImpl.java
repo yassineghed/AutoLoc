@@ -25,6 +25,16 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
+    public long count() {
+        return clientRepository.count();
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return clientRepository.existsById(id);
+    }
+
+    @Override
     public Client findById(Long id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", id));

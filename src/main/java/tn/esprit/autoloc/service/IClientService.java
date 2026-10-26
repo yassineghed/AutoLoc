@@ -11,6 +11,10 @@ public interface IClientService {
 
     List<Client> findAll();
 
+    long count();
+
+    boolean existsById(Long id);
+
     Client update(Long id, Client client);
 
     void deleteById(Long id);
