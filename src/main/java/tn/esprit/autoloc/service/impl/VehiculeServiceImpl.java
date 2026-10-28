@@ -7,20 +7,46 @@ import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IVehiculeRepository;
 import tn.esprit.autoloc.service.IVehiculeService;
+import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.repository.IAgenceRepository;
 
 @Service
 @RequiredArgsConstructor
 public class VehiculeServiceImpl implements IVehiculeService {
 
     private final IVehiculeRepository vehiculeRepository;
+    private final IAgenceRepository agenceRepository;
 
     @Override
     public Vehicule create(Vehicule vehicule) {
+
         if (vehicule.getIdVehicule() != null) {
             throw new IllegalArgumentException(
-                    "Un nouveau véhicule ne doit pas avoir d'identifiant");
+                    "Un nouveau véhicule ne doit pas avoir d'identifiant"
+            );
         }
+
         verifierVehicule(vehicule);
+
+        // Find the existing agency in MySQL
+        if (vehicule.getAgence() != null) {
+
+            Long agenceId = vehicule.getAgence().getIdAgence();
+
+            if (agenceId == null) {
+                throw new IllegalArgumentException(
+                        "L'identifiant de l'agence est obligatoire"
+                );
+            }
+
+            Agence agence = agenceRepository.findById(agenceId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Agence", agenceId)
+                    );
+
+            vehicule.setAgence(agence);
+        }
+
         return vehiculeRepository.save(vehicule);
     }
 
